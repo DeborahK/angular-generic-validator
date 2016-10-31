@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var forms_1 = require('@angular/forms');
+require('rxjs/add/operator/debounceTime');
 var customer_1 = require('./customer');
 var generic_validator_1 = require('../shared/generic-validator');
 function emailMatcher(c) {
@@ -60,7 +61,7 @@ var CustomerComponent = (function () {
         this.customerForm.get('notification').valueChanges.subscribe(function (value) {
             _this.setNotification(value);
         });
-        this.customerForm.valueChanges.subscribe(function (value) {
+        this.customerForm.valueChanges.debounceTime(1000).subscribe(function (value) {
             _this.displayMessage = _this.genericValidator.processMessages(_this.customerForm);
         });
     };

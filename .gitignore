@@ -1,3 +1,7 @@
+# Generated files
+**/app/**/*.js
+**/app/**/*.map
+
 # Logs
 logs
 *.log

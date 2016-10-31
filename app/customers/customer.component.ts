@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 
+import 'rxjs/add/operator/debounceTime';
+
 import { Customer } from './customer';
 import { GenericValidator } from '../shared/generic-validator';
 
@@ -64,7 +66,7 @@ export class CustomerComponent implements OnInit {
             this.setNotification(value);
         });
 
-        this.customerForm.valueChanges.subscribe(value => {
+        this.customerForm.valueChanges.debounceTime(1000).subscribe(value => {
            this.displayMessage = this.genericValidator.processMessages(this.customerForm);
         });
     }
