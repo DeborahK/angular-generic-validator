@@ -1,0 +1,148 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Sign Up!
+    </div>
+
+    <div class="panel-body">
+        <form class="form-horizontal"
+              novalidate
+              (ngSubmit)="save()"
+              [formGroup]="customerForm">
+            <fieldset>
+                <div class="form-group"
+                    [ngClass]="{'has-error': displayMessage.firstName }">
+                    <label class="col-md-2 control-label" 
+                           for="firstNameId">First Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="firstNameId" 
+                               type="text" 
+                               placeholder="First Name (required)" 
+                               formControlName="firstName" />
+                        <span class="help-block" *ngIf="displayMessage.firstName">
+                            {{ displayMessage.firstName }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{'has-error': displayMessage.lastName }">
+                    <label class="col-md-2 control-label" 
+                        for="lastNameId">Last Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="lastNameId" 
+                               type="text" 
+                               placeholder="Last Name (required)" 
+                               formControlName = "lastName" />
+                        <span class="help-block" *ngIf="displayMessage.lastName">
+                            {{ displayMessage.lastName }}
+                       </span>
+                    </div>
+                </div>
+
+                <div formGroupName="emailGroup"
+                     [ngClass]="{'has-error': customerForm.get('emailGroup').errors && 
+                                              customerForm.get('emailGroup').errors.match }">
+                    <div class="form-group"
+                        [ngClass]="{'has-error': displayMessage.email}">
+                        <label class="col-md-2 control-label" 
+                            for="emailId">Email</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="emailId" 
+                                type="email" 
+                                placeholder="Email (required)" 
+                                formControlName = "email" />
+                            <span class="help-block" *ngIf="displayMessage.email">
+                                {{ displayMessage.email }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group"
+                        [ngClass]="{'has-error': (customerForm.get('emailGroup.confirmEmail').touched || 
+                                                  customerForm.get('emailGroup.confirmEmail').dirty) && 
+                                                  !customerForm.get('emailGroup.confirmEmail').valid }">
+                        <label class="col-md-2 control-label" 
+                            for="confirmEmailId">Confirm Email</label>
+
+                        <div class="col-md-8">
+                            <input class="form-control" 
+                                id="confirmEmailId" 
+                                type="email" 
+                                placeholder="Confirm Email (required)" 
+                                formControlName = "confirmEmail" />
+                            <span class="help-block" *ngIf="(customerForm.get('emailGroup.confirmEmail').touched || 
+                                                            customerForm.get('emailGroup.confirmEmail').dirty) && 
+                                                            customerForm.get('emailGroup.confirmEmail').errors">
+                                <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors.required">
+                                    Please confirm your email address.
+                                </span>                          
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-8">
+                            <span class="help-block" *ngIf="customerForm.get('emailGroup').errors">
+                                <span *ngIf="customerForm.get('emailGroup').errors.match">
+                                    The email address does not match the confirmation.
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{'has-error': !customerForm.controls.phone.valid }">
+                    <label class="col-md-2 control-label" 
+                        for="phoneId">Phone</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="phoneId" 
+                               type="tel" 
+                               placeholder="Phone" 
+                               formControlName = "phone" />
+                        <span class="help-block" *ngIf="customerForm.controls.phone.errors">
+                            <span *ngIf="customerForm.controls.phone.errors.required">
+                                Please enter your phone number.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group" >
+                    <label class="col-md-2 control-label">Send Notifications</label>
+                    <div class="col-md-8">
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="email" 
+                                       formControlName="notification">Email
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" 
+                                       value="text" 
+                                       formControlName="notification">Text
+                            </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary"
+                                    type="submit"
+                                    [disabled]="!customerForm.valid">
+                                Save
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
