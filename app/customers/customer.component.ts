@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { Component, OnInit, AfterViewInit, ViewChildren, ElementRef } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, AbstractControl, FormControlName } from '@angular/forms';
 
 import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/observable/merge';
+import { Observable } from 'rxjs/Observable';
 
 import { Customer } from './customer';
 import { GenericValidator } from '../shared/generic-validator';
@@ -24,13 +27,15 @@ function emailMatcher(c: AbstractControl) {
     selector: 'my-signup',
     templateUrl: './app/customers/customer.component.html'
 })
-export class CustomerComponent implements OnInit {
+export class CustomerComponent implements OnInit, AfterViewInit {
+    @ViewChildren(FormControlName, { read: ElementRef }) formControls: ElementRef[];
+
     customerForm: FormGroup;
     customer: Customer = new Customer();
     displayMessage: { [key: string]: string } = {};
     genericValidator: GenericValidator;
 
-    private validationMessages: { [key: string]: { [key: string]: string} } = {
+    private validationMessages: { [key: string]: { [key: string]: string } } = {
         firstName: {
             required: 'Please enter your first name.',
             minlength: 'The first name must be longer than 3 characters.'
@@ -48,7 +53,7 @@ export class CustomerComponent implements OnInit {
     constructor(private fb: FormBuilder) {
         // Create an instance of the generic validator
         this.genericValidator = new GenericValidator(this.validationMessages);
-     }
+    }
 
     ngOnInit(): void {
         this.customerForm = this.fb.group({
@@ -65,9 +70,14 @@ export class CustomerComponent implements OnInit {
         this.customerForm.get('notification').valueChanges.subscribe(value => {
             this.setNotification(value);
         });
+    }
 
-        this.customerForm.valueChanges.debounceTime(1000).subscribe(value => {
-           this.displayMessage = this.genericValidator.processMessages(this.customerForm);
+    ngAfterViewInit() {
+        let controlBlurs: Observable<any>[] = this.formControls
+            .map((formControl: ElementRef) => Observable.fromEvent(formControl.nativeElement, 'blur'));
+
+        Observable.merge(this.customerForm.valueChanges, ...controlBlurs).debounceTime(1000).subscribe(value => {
+            this.displayMessage = this.genericValidator.processMessages(this.customerForm);
         });
     }
 
